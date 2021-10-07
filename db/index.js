@@ -1,32 +1,18 @@
-const { Client } = require('pg'); // imports the pg module
+// const { Client } = require('pg');
+// const DB_NAME = 'finalproject-dev'
+// const DB_URL = process.env.DATABASE_URL || `postgres://${ DB_NAME }`;
+// const client = new Client(DB_URL);
+// const { client } = require('./client')
 
-// supply the db name and location of the database
-const client = new Client('postgres://localhost:5432/finalproject-dev');
+const { Client } = require('pg');
 
-async function getAllUsers() {
-  const { rows } = await client.query(
-    `SELECT id, username 
-    FROM users;
-  `);
-
-  return rows;
-}
+const client = new Client(process.env.DATABASE_URL || 'postgres://localhost:5432/finalproject-dev');
+const { 
+  createUser, 
+  getAllUsers
+} = require('./users');
 
 
-async function createUser({ username, password }) {
-  try {
-    const { rows } = await client.query(`
-    INSERT INTO users(username, password) 
-    VALUES($1, $2) 
-    ON CONFLICT (username) DO NOTHING 
-    RETURNING *;
-  `, [username, password]);
-
-    return rows;
-  } catch (error) {
-    throw error;
-  }
-}
 
 // and export them
 module.exports = {
