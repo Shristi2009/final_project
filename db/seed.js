@@ -26,12 +26,40 @@ async function createTables() {
     console.log("Starting to build tables...");
 
     await client.query(`
+    CREATE TABLE cart (
+      id SERIAL PRIMARY KEY,
+      "usersId" INTEGER REFERENCES users(id),
+      "itemsId" INTEGER REFERENCES items(id),
+      processed BOOLEAN DEFAULT false, 
+      "inProcess" BOOLEAN DEFAULT true 
+    );
+  `);
+
+  await client.query(`
+  CREATE TABLE items (
+    id SERIAL PRIMARY KEY,
+    name varchar(255) UNIQUE NOT NULL,
+    price INTEGER NOT NULL, 
+    description varchar(255) NOT NULL
+  );
+`);
+
+    await client.query(`
       CREATE TABLE users (
         id SERIAL PRIMARY KEY,
         username varchar(255) UNIQUE NOT NULL,
-        password varchar(255) NOT NULL
+        password varchar(255) NOT NULL,
+        active BOOLEAN DEFAULT false,
+        admin BOOLEAN DEFAULT false,
+        "firstName" varchar(255) NOT NULL, 
+        "lastName" varchar(255) NOT NULL,
+        location varchar(255) NOT NULL
       );
     `);
+//ask shannon about image in database
+
+
+
 
     console.log("Finished building tables!");
   } catch (error) {
