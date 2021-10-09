@@ -1,4 +1,4 @@
-const client = require('./index');
+const client = require('./client');
 
 async function getAllUsers() {
     const { rows } = await client.query(
@@ -10,14 +10,14 @@ async function getAllUsers() {
   }
   
   
-  async function createUser({ username, password, firstname, lastname, location }) {
+  async function createUser({ username, password, firstName, lastName, location }) {
     try {
       const { rows } = await client.query(`
-      INSERT INTO users(username, password, firstname, lastname, location) 
+      INSERT INTO users(username, password, "firstName", "lastName", location) 
       VALUES($1, $2) 
       ON CONFLICT (username) DO NOTHING 
       RETURNING *;
-    `, [username, password, firstname, lastname, location]);
+    `, [username, password, firstName, lastName, location]);
   
       return rows;
     } catch (error) {
