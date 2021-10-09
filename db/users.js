@@ -2,7 +2,7 @@ const client = require('./client');
 
 async function getAllUsers() {
     const { rows } = await client.query(
-      `SELECT id, username 
+      `SELECT *
       FROM users;
     `);
   
