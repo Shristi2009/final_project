@@ -1,15 +1,19 @@
 const {
-  client,
   getAllUsers,
   createUser
 } = require('./index');
+
+const client = require('./client');
 
 async function dropTables() {
   try {
     console.log("Starting to drop tables...");
 
     await client.query(`
+      DROP TABLE IF EXISTS cart;
+      DROP TABLE IF EXISTS items;
       DROP TABLE IF EXISTS users;
+
     `);
 
     console.log("Finished dropping tables!");
@@ -26,12 +30,15 @@ async function createTables() {
     console.log("Starting to build tables...");
 
     await client.query(`
-    CREATE TABLE cart (
+    CREATE TABLE users (
       id SERIAL PRIMARY KEY,
-      "usersId" INTEGER REFERENCES users(id),
-      "itemsId" INTEGER REFERENCES items(id),
-      processed BOOLEAN DEFAULT false, 
-      "inProcess" BOOLEAN DEFAULT true 
+      username varchar(255) UNIQUE NOT NULL,
+      password varchar(255) NOT NULL,
+      active BOOLEAN DEFAULT false,
+      admin BOOLEAN DEFAULT false,
+      "firstName" varchar(255) NOT NULL, 
+      "lastName" varchar(255) NOT NULL,
+      location varchar(255) NOT NULL
     );
   `);
 
@@ -45,17 +52,18 @@ async function createTables() {
 `);
 // items table needs usersid and cartid
     await client.query(`
-      CREATE TABLE users (
-        id SERIAL PRIMARY KEY,
-        username varchar(255) UNIQUE NOT NULL,
-        password varchar(255) NOT NULL,
-        active BOOLEAN DEFAULT false,
-        admin BOOLEAN DEFAULT false,
-        "firstName" varchar(255) NOT NULL, 
-        "lastName" varchar(255) NOT NULL,
-        location varchar(255) NOT NULL
-      );
-    `);
+    CREATE TABLE cart (
+      id SERIAL PRIMARY KEY,
+      "usersId" INTEGER REFERENCES users(id),
+      "itemsId" INTEGER REFERENCES items(id),
+      processed BOOLEAN DEFAULT false, 
+      "inProcess" BOOLEAN DEFAULT true 
+    );
+  `);
+
+
+
+ 
 //ask shannon about image in database
 
 
@@ -72,9 +80,9 @@ async function createInitialUsers() {
   try {
     console.log("Starting to create users...");
 
-    const albert = await createUser({ username: 'albert', password: 'bertie99' });
-    const sandra = await createUser({ username: 'sandra', password: '2sandy4me' });
-    const glamgal = await createUser({ username: 'glambal', password: 'soglam' });
+    const albert = await createUser({ username: 'albert', password: 'bertie99', firstName: 'Albert', lastName: 'Johnson', location: 'St. Louis' });
+    // const sandra = await createUser({ username: 'sandra', password: '2sandy4me' });
+    // const glamgal = await createUser({ username: 'glambal', password: 'soglam' });
 
 
 
