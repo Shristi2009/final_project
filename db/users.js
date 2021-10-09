@@ -25,7 +25,38 @@ async function getAllUsers() {
     }
   }
 
+  async function getUserById(id) {
+    try {
+      const { rows: [ user ] } = await client.query(`
+        SELECT *
+        FROM users
+        WHERE id='${ id }';
+      `);
+  
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+  
+
+  async function getUserByUsername (username) {
+    try {
+      const { rows: [user] } = await client.query(`
+        SELECT *
+        FROM users
+        WHERE username =$1;
+      `,[username]);
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+// testing 123
+
   module.exports = {
       getAllUsers,
-      createUser
+      createUser, 
+      getUserById, 
+      getUserByUsername
   }
