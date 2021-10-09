@@ -2,7 +2,7 @@ const client = require('./client');
 
 async function getAllUsers() {
     const { rows } = await client.query(
-      `SELECT id, username 
+      `SELECT *
       FROM users;
     `);
   
@@ -14,7 +14,7 @@ async function getAllUsers() {
     try {
       const { rows } = await client.query(`
       INSERT INTO users(username, password, "firstName", "lastName", location) 
-      VALUES($1, $2) 
+      VALUES($1, $2, $3, $4, $5) 
       ON CONFLICT (username) DO NOTHING 
       RETURNING *;
     `, [username, password, firstName, lastName, location]);
