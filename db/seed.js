@@ -43,7 +43,7 @@ async function createTables() {
     description varchar(255) NOT NULL
   );
 `);
-
+// items table needs usersid and cartid
     await client.query(`
       CREATE TABLE users (
         id SERIAL PRIMARY KEY,
