@@ -1,8 +1,9 @@
 const {
-  client,
   getAllUsers,
   createUser
 } = require('./index');
+
+const client = require('./client');
 
 async function dropTables() {
   try {

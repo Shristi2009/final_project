@@ -1,17 +1,23 @@
-const { Client } = require('pg');
+const {
+  getAllUsers,
+  createUser
+} = require('./users')
 
-const client = new Client(process.env.DATABASE_URL || 'postgres://localhost:5432/finalproject-dev');
-
-const { 
-  createUser, 
-  getAllUsers
-} = require('./users');
-
-
+const {
+  getAllItems,
+  createItem,
+  getItemById,
+  updateItem,
+  deleteItem
+} = require('./items')
 
 // and export them
 module.exports = {
-  client,
   getAllUsers,
-  createUser
+  createUser,
+  getAllItems,
+  createItem,
+  getItemById,
+  updateItem,
+  deleteItem
 }
