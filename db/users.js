@@ -10,14 +10,14 @@ async function getAllUsers() {
   }
   
   
-  async function createUser({ username, password, active, admin, firstName, lastName, location }) {
+  async function createUser({ username, password, firstName, lastName, location }) {
     try {
       const { rows } = await client.query(`
-      INSERT INTO users(username, password, active, admin, "firstName", "lastName", location ) 
-      VALUES($1, $2, $3, $4, $5, $6, $7) 
+      INSERT INTO users(username, password, "firstName", "lastName", location) 
+      VALUES($1, $2) 
       ON CONFLICT (username) DO NOTHING 
       RETURNING *;
-    `, [username, password, active, admin, firstName, lastName, location]);
+    `, [username, password, firstName, lastName, location]);
   
       return rows;
     } catch (error) {
