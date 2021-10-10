@@ -23,9 +23,9 @@ const {getCartById,
 // and export them
 module.exports = {
   getAllUsers,
-      createUser, 
-      getUserById, 
-      getUserByUsername,
+  createUser, 
+  getUserById, 
+  getUserByUsername,
   getAllItems,
   createItem,
   getItemById,

@@ -24,6 +24,9 @@ client.connect();
 const cors =require('cors');
 server.use(cors());
 
+// for token
+const jwt = require('jsonwebtoken');
+const SECRET = require('./api/secret');
 
 server.use((req, res, next) => {
   console.log("<____Body Logger START____>");
