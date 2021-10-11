@@ -1,5 +1,14 @@
 const client= require('./client');
 
+async function getAllCarts() {
+  const { rows } = await client.query(
+    `SELECT *
+    FROM cart;
+  `);
+
+  return rows;
+}
+
 
 async function createCart({ 
     usersId, 
@@ -12,7 +21,6 @@ async function createCart({
       const { rows: [ cart ] } = await client.query(`
         INSERT INTO cart("usersId", "itemsId", processed, "inProcess") 
         VALUES($1, $2, $3, $4)
-        ON CONFLICT ("usersId", "itemsId") DO NOTHING 
         RETURNING *;
       `, [usersId, itemsId, processed, inProcess]);
   
@@ -93,5 +101,6 @@ async function createCart({
     createCart,
     removeItem,
     deleteCart,
-    getCartByUsersId
+    getCartByUsersId,
+    getAllCarts
 }

@@ -1,9 +1,13 @@
 const {
   getAllUsers,
-  createUser
+  createUser,
+  createItem,
+  createCart,
+  getAllCarts
 } = require('./index');
 
 const client = require('./client');
+const { getAllItems } = require('./items');
 
 async function dropTables() {
   try {
@@ -42,15 +46,18 @@ async function createTables() {
     );
   `);
 
+
+//ASK SHANNON. HOW TO GET CURRENCY DECIMALS IN PRICE?
   await client.query(`
   CREATE TABLE items (
     id SERIAL PRIMARY KEY,
     name varchar(255) UNIQUE NOT NULL,
-    price INTEGER NOT NULL, 
+    price DECIMAL(3,2), 
     description varchar(255) NOT NULL
   );
 `);
 // items table needs usersid and cartid
+// ASK SHANNON. BOOLEAN DEFAULTs not working, null in table
     await client.query(`
     CREATE TABLE cart (
       id SERIAL PRIMARY KEY,
@@ -80,9 +87,9 @@ async function createInitialUsers() {
   try {
     console.log("Starting to create users...");
 
-    const albert = await createUser({ username: 'albert', password: 'bertie99', firstName: 'Albert', lastName: 'Johnson', location: 'St. Louis' });
-    // const sandra = await createUser({ username: 'sandra', password: '2sandy4me' });
-    // const glamgal = await createUser({ username: 'glambal', password: 'soglam' });
+    const albert = await createUser({ username: 'albert', password: 'bertie99', firstName: 'Albert', lastName: 'Johnson', location: 'St. Louis, MO' });
+    const john = await createUser({ username: 'john', password: 'admintest', firstName: 'John', lastName: 'Doe', location: 'Oklahoma City, OK' });
+    const skip = await createUser({ username: 'skip', password: 'skippassword', firstName: 'Skip', lastName: 'Allthetime', location: 'Norman, OK' });
 
 
 
@@ -93,13 +100,49 @@ async function createInitialUsers() {
   }
 }
 
+async function createInitialItems() {
+  try {
+    console.log("Starting to create items...");
+
+    const captainCrunch = await createItem({ name: 'Captian Crunch', price: 3, description: "Sweet and golden, with a crunch you’ll love, nothing competes with the original Cap’n Crunch." });
+    const cheerios = await createItem({ name: 'Cheerios', price: 3, description: "Our delicious O’s are made from whole grain oats which contain beta-glucan, a soluble fiber that can help lower cholesterol as part of a heart-healthy diet.* Pick up a Cheerios cereal box today and begin your happy heart journey." });
+    const frostedFlakes = await createItem({ name: 'Frosted Flakes', price: 3, description: "Kellogg's Frosted Flakes consist of crunchy flakes perfectly coated with sweetened frosting gives every morning a great start." });
+
+
+
+    console.log("Finished creating items!");
+  } catch(error) {
+    console.error("Error creating items!");
+    throw error;
+  }
+}
+
+async function createInitialCarts() {
+  try {
+    console.log("Starting to create carts...");
+
+    await createCart({ usersId: 1, itemsId: 1 });
+    await createCart({ usersId: 1, itemsId: 2 });
+    await createCart({ usersId: 2, itemsId: 3 });
+
+
+
+    console.log("Finished creating carts!");
+  } catch(error) {
+    console.error("Error creating carts!");
+    throw error;
+  }
+}
+
 async function rebuildDB() {
   try {
     client.connect();
 
     await dropTables();
     await createTables();
-    await createInitialUsers()
+    await createInitialUsers();
+    await createInitialItems();
+    await createInitialCarts();
   } catch (error) {
     throw error;
   }
@@ -111,6 +154,12 @@ async function testDB() {
 
     const users = await getAllUsers();
     console.log("getAllUsers:", users);
+
+    const items = await getAllItems();
+    console.log("getAllItems:", items);
+
+    const carts = await getAllCarts();
+    console.log("getAllCarts:", carts);
 
     console.log("Finished database tests!");
   } catch (error) {
