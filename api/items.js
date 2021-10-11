@@ -1,3 +1,6 @@
+const itemsRouter = require('express').Router();
+// const jwt = require('jsonwebtoken'); //will need this eventually
+
 const { getAllItems,
         createItem,
         getItemById,
@@ -16,6 +19,22 @@ itemsRouter.get('/', async (req, res, next) => {
         next(error);
     }
 });
+
+itemsRouter.get('/:id', async (req, res, next) => {//Colons meen a variable, use req.params
+    const { id } = req.params
+    try {
+        
+        console.log('GETTING THE ITEM');
+        
+        const item = await getItemById({id}); 
+
+        res.send(item);
+    } catch (error) {
+        console.log('THERE WAS AN ERROR GETTING ITEM');
+        next(error);
+    }
+});
+
 
 
 
@@ -36,3 +55,6 @@ itemsRouter.post('/', async (req, res, next) => {
     }
 });
 
+
+
+module.exports = itemsRouter;

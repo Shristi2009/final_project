@@ -23,13 +23,13 @@ async function getAllItems() {
     }
   }
 
-  async function createItem({ name, price, image, description }) {
+  async function createItem({ name, price, description }) {
     try {
       const { rows } = await client.query(`
-      INSERT INTO items(name, price, image, description) 
-      VALUES($1, $2, $3, $4)  
+      INSERT INTO items(name, price, description) 
+      VALUES($1, $2, $3)  
       RETURNING *;
-    `, [name, price, image, description]);
+    `, [name, price, description]);
   
       return rows;
     } catch (error) {
@@ -48,7 +48,7 @@ async function getAllItems() {
     try {
       const { rows: [items] } = await client.query(`
         UPDATE items
-        SET name='${name}', price ='${price}', image ='${image}', description='${description}'
+        SET name='${name}', price =${price}, description='${description}'
         WHERE id= ${ id }
         RETURNING *;
       `);
