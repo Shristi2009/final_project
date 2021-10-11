@@ -9,10 +9,10 @@ const {
 const cartRouter = require('express').Router();
 
 cartRouter.get('/', async (req, res, next) => {
-    const {id}= req.user;
+    
     try {
         if(req.user){
-            const cartByUsersId = await getCartByUsersId(id)
+            const cartByUsersId = await getCartByUsersId(req.user.id)
             const cart = await getCartById(cartByUsersId.usersId); 
             console.log('GETTING CART BY ID:');
             res.send(cart);
@@ -27,10 +27,10 @@ cartRouter.get('/', async (req, res, next) => {
 });
 
 cartRouter.get('/usersId', async (req, res, next) => {
-    const {id}= req.user;
+    
     try {
         if(req.user){
-            const cart = await getCartByUsersId(id); 
+            const cart = await getCartByUsersId(req.user.id); 
             console.log('GETTING CART BY ID:');
             res.send(cart);
         }else {
@@ -61,9 +61,10 @@ cartRouter.post('/', async (req, res, next) => {
 });
 
 cartRouter.delete('/removeItem', async (req, res, next) => {
-    const {id} =req.user;
+    
     try {
         if(req.user){
+            const {id} =req.user;
             const getCart =getCartByUsersId(id)
             const removeItemFromCart = await removeItem(getCart.itemsid); 
             res.send(removeItemFromCart);
@@ -78,9 +79,10 @@ cartRouter.delete('/removeItem', async (req, res, next) => {
 });
    
 cartRouter.delete('/', async (req, res, next) => {
-    const {id} =req.user;
+    
     try {
         if(req.user){
+            const {id} =req.user;
             const getCart =getCartByUsersId(id)
             const deletedCart = await deleteCart(getCart.id); 
             res.send(deletedCart);
