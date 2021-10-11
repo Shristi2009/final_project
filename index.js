@@ -10,30 +10,57 @@ server.use(morgan('dev'));
 const bodyParser = require('body-parser');
 server.use(bodyParser.json());
 
-// here's our static files
-const path = require('path');
-server.use(express.static(path.join(__dirname, 'build')));
 
 // here's our API
-server.use('/api', require('./routes'));
-
-// by default serve up the react app if we don't recognize the route
-server.use((req, res, next) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'))
-});
+const apiRouter = require('./api');
+server.use('/api', apiRouter);
 
 // bring in the DB connection
-const { client } = require('./db');
+const client = require('./db/client');
+const { getUserById } = require('./db');
+client.connect();
+
+//cors
+const cors =require('cors');
+server.use(cors());
+
+// for token
+const jwt = require('jsonwebtoken');
+const SECRET = require('./api/secret');
+
+server.use((req, res, next) => {
+  console.log("<____Body Logger START____>");
+  console.log(req.body);
+  console.log("<_____Body Logger END_____>");
+
+  next();
+});
+
+server.use(async (req, res, next) => {
+   if(req.header('Authorization')) {
+       const authHeader = req.header('Authorization');
+       if (!authHeader) {
+           next();
+       }
+       const token = authHeader.split('Bearer ')[1];
+       const { id } = jwt.verify(token, SECRET);
+       console.log('HERES YOUR ID', id);
+       if(!id) {
+           next();
+       }
+       req.user = await getUserById(id);
+       console.log("REQ USER",req.user);
+       next();
+   } else {
+       next();
+   }
+});
+
+
 
 // connect to the server
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, async () => {
-  console.log(`Server is running on ${ PORT }!`);
+const {PORT = 3000} = process.env;
 
-  try {
-    await client.connect();
-    console.log('Database is open for business!');
-  } catch (error) {
-    console.error("Database is closed for repairs!\n", error);
-  }
-});
+server.listen(PORT, () => {
+  console.log(`server listening on http://localhost:${PORT}`);
+}); 
