@@ -1,5 +1,5 @@
 const itemsRouter = require('express').Router();
-// const jwt = require('jsonwebtoken'); //will need this eventually
+
 
 const { getAllItems,
         createItem,
@@ -12,7 +12,7 @@ itemsRouter.get('/', async (req, res, next) => {
     try {
         
         const items = await getAllItems(); 
-        console.log('THE ITEMS YOUR GETTING ARE:');
+        
         res.send(items);
         next();
     } catch (error) {
