@@ -3,7 +3,7 @@ const usersRouter = require('./users'); const itemsRouter = require('./items');
  const cartRouter = require('./cart');
 // for token
 const jwt = require('jsonwebtoken');
-const SECRET = require('./secret');
+const  {SECRET}  = process.env;
 const { getUserById } = require('../db');
  
 apiRouter.get('/health', (req, res, next ) => {
