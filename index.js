@@ -21,6 +21,7 @@ const client = require('./db/client');
 
 
 
+
 //cors
 const cors =require('cors');
 server.use(cors());

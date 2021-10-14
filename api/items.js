@@ -14,6 +14,7 @@ itemsRouter.get('/', async (req, res, next) => {
         const items = await getAllItems(); 
         console.log('THE ITEMS YOUR GETTING ARE:');
         res.send(items);
+        next();
     } catch (error) {
         console.log('THERE WAS AN ERROR GETTING ITEMS');
         next(error);
@@ -29,6 +30,7 @@ itemsRouter.get('/:id', async (req, res, next) => {//Colons meen a variable, use
         const item = await getItemById(id); 
         console.log("item",item);
         res.send(item);
+        next();
     } catch (error) {
         console.log('THERE WAS AN ERROR GETTING ITEM');
         next(error);
