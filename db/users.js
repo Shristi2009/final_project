@@ -30,7 +30,7 @@ async function getAllUsers() {
       const { rows: [ user ] } = await client.query(`
         SELECT *
         FROM users
-        WHERE id='${ id }';
+        WHERE id=${ id };
       `);
   
       return user;
@@ -41,12 +41,14 @@ async function getAllUsers() {
   
 
   async function getUserByUsername (username) {
+    console.log(username)
     try {
       const { rows: [user] } = await client.query(`
         SELECT *
         FROM users
         WHERE username =$1;
       `,[username]);
+      console.log("USER",user);
       return user;
     } catch (error) {
       throw error;
@@ -58,5 +60,6 @@ async function getAllUsers() {
       getAllUsers,
       createUser, 
       getUserById, 
-      getUserByUsername
+      getUserByUsername,
+      
   }

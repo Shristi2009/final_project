@@ -1,7 +1,7 @@
 const usersRouter = require('express').Router();
 const jwt = require('jsonwebtoken')
 
-const {createUser, getUser} = require ('../db')
+const {createUser, getUserByUsername} = require ('../db')
 const SECRET = require('./secret')
 
 usersRouter.post('/register', async (req, res, next) => {
@@ -16,6 +16,7 @@ usersRouter.post('/register', async (req, res, next) => {
             }
         }
             const user = await createUser(req.body);
+            
             console.log(user)
             res.send({user});
     } catch (error) {
@@ -27,13 +28,15 @@ usersRouter.post('/register', async (req, res, next) => {
 
   usersRouter.post('/login', async (req, res, next) => {
     try {
-        const user = await getUser(req.body.username, req.body.password);
+        const user = await getUserByUsername(req.body.username);
+        console.log(user)
         const token = jwt.sign({
             id: user.id,
             username: user.username
         }, SECRET);
         console.log(token);
         res.send({token});
+        next()
     } catch (error) {
         next(error);
     }

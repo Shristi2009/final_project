@@ -11,13 +11,13 @@ async function getAllItems() {
 
   async function getItemById(id) {
     try {
-      const { rows: [ items ] } = await client.query(`
+      const { rows } = await client.query(`
         SELECT *
         FROM items
-        WHERE id='${ id }';
+        WHERE id= ${ id };
       `);
   
-      return items;
+      return rows;
     } catch (error) {
       throw error;
     }

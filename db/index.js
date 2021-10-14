@@ -2,7 +2,8 @@ const {
   getAllUsers,
       createUser, 
       getUserById, 
-      getUserByUsername
+      getUserByUsername,
+      getUser
 } = require('./users')
 
 const {
