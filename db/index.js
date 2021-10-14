@@ -1,22 +1,44 @@
-// const { Client } = require('pg');
-// const DB_NAME = 'finalproject-dev'
-// const DB_URL = process.env.DATABASE_URL || `postgres://${ DB_NAME }`;
-// const client = new Client(DB_URL);
-// const { client } = require('./client')
+const {
+  getAllUsers,
+      createUser, 
+      getUserById, 
+      getUserByUsername,
+      getUser
+} = require('./users')
 
-const { Client } = require('pg');
+const {
+  getAllItems,
+  createItem,
+  getItemById,
+  updateItem,
+  deleteItem
+} = require('./items')
 
-const client = new Client(process.env.DATABASE_URL || 'postgres://localhost:5432/finalproject-dev');
-const { 
-  createUser, 
-  getAllUsers
-} = require('./users');
 
-
+const {getCartById,
+  createCart,
+  removeItem,
+  deleteCart,
+  getCartByUsersId,
+  getAllCarts
+ 
+} = require('./cart')
 
 // and export them
 module.exports = {
-  client,
   getAllUsers,
-  createUser
+  createUser, 
+  getUserById, 
+  getUserByUsername,
+  getAllItems,
+  createItem,
+  getItemById,
+  updateItem,
+  deleteItem,
+  getCartById,
+  createCart,
+  removeItem,
+  deleteCart,
+  getCartByUsersId,
+  getAllCarts
 }
