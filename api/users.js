@@ -2,7 +2,7 @@ const usersRouter = require('express').Router();
 const jwt = require('jsonwebtoken')
 
 const {createUser, getUserByUsername} = require ('../db')
-const SECRET = require('./secret')
+const  {SECRET} = process.env;
 
 usersRouter.post('/register', async (req, res, next) => {
     try {
