@@ -3,6 +3,10 @@ require('dotenv').config();
 const express = require('express');
 const server = express();
 
+//cors
+const cors =require('cors');
+server.use(cors());
+
 // create logs for everything
 const morgan = require('morgan');
 server.use(morgan('dev'));
@@ -22,9 +26,6 @@ const client = require('./db/client');
 
 
 
-//cors
-const cors =require('cors');
-server.use(cors());
 
 
 
