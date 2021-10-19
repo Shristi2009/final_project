@@ -24,6 +24,17 @@ const {getCartById,
  
 } = require('./cart')
 
+const {
+  addItemToCart,
+    getCartItemById,
+    updateCartItem,
+  
+    destroyCartItem,
+    getItemsByCartId,
+    clearCart
+ 
+} = require('./cart_items')
+
 // and export them
 module.exports = {
   getAllUsers,
@@ -40,5 +51,12 @@ module.exports = {
   removeItem,
   deleteCart,
   getCartByUsersId,
-  getAllCarts
+  getAllCarts,
+  addItemToCart,
+    getCartItemById,
+    updateCartItem,
+
+    destroyCartItem,
+    getItemsByCartId,
+    clearCart
 }
