@@ -56,7 +56,8 @@ async function createTables() {
     id SERIAL PRIMARY KEY,
     name varchar(255) UNIQUE NOT NULL,
     price DECIMAL(3,2), 
-    description varchar(255) NOT NULL
+    description varchar(255) NOT NULL,
+    picture varchar(255)
   );
 `);
 // items table needs usersid and cartid
@@ -114,9 +115,9 @@ async function createInitialItems() {
   try {
     console.log("Starting to create items...");
 
-    const captainCrunch = await createItem({ name: 'Captian Crunch', price: 3, description: "Sweet and golden, with a crunch you’ll love, nothing competes with the original Cap’n Crunch." });
-    const cheerios = await createItem({ name: 'Cheerios', price: 3, description: "Our delicious O’s are made from whole grain oats which contain beta-glucan, a soluble fiber that can help lower cholesterol as part of a heart-healthy diet.* Pick up a Cheerios cereal box today and begin your happy heart journey." });
-    const frostedFlakes = await createItem({ name: 'Frosted Flakes', price: 3, description: "Kellogg's Frosted Flakes consist of crunchy flakes perfectly coated with sweetened frosting gives every morning a great start." });
+    const captainCrunch = await createItem({ name: 'Captian Crunch', price: 3, description: "Sweet and golden, with a crunch you’ll love, nothing competes with the original Cap’n Crunch.", picture: "captian_crunch.jpg" });
+    const cheerios = await createItem({ name: 'Cheerios', price: 3, description: "Our delicious O’s are made from whole grain oats which contain beta-glucan, a soluble fiber that can help lower cholesterol as part of a heart-healthy diet.* Pick up a Cheerios cereal box today and begin your happy heart journey.", picture: "cheerios.jpg" });
+    const frostedFlakes = await createItem({ name: 'Frosted Flakes', price: 3, description: "Kellogg's Frosted Flakes consist of crunchy flakes perfectly coated with sweetened frosting gives every morning a great start.", picture: "frosted_flakes.jpg"  });
 
 
 

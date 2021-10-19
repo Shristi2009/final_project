@@ -58,5 +58,8 @@ module.exports = {
 
     destroyCartItem,
     getItemsByCartId,
-    clearCart
+    clearCart,
+
+  getAllCarts
 }
+
