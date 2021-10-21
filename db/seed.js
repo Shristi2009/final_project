@@ -9,17 +9,17 @@ const {
 
 const client = require('./client');
 const { getAllItems } = require('./items');
-const { addItemToCart, getCartItemById } = require('./cart_items');
+
 
 async function dropTables() {
   try {
     console.log("Starting to drop tables...");
 
     await client.query(`
-   
-      DROP TABLE IF EXISTS cart;
-      DROP TABLE IF EXISTS items;
-      DROP TABLE IF EXISTS users;
+    
+      DROP TABLE IF EXISTS cart cascade;
+      DROP TABLE IF EXISTS items cascade;
+      DROP TABLE IF EXISTS users cascade;
 
     `);
 
@@ -60,7 +60,8 @@ async function createTables() {
     picture varchar(255)
   );
 `);
-
+// items table needs usersid and cartid
+// ASK SHANNON. BOOLEAN DEFAULTs not working, null in table
     await client.query(`
     CREATE TABLE cart (
       id SERIAL PRIMARY KEY,
@@ -68,10 +69,10 @@ async function createTables() {
       "itemsId" INTEGER REFERENCES items(id),
       processed BOOLEAN DEFAULT false, 
       "inProcess" BOOLEAN DEFAULT true,
-      quantity INTEGER 
+      quantity INTEGER
     );
   `);
-
+  
  
 //ask shannon about image in database
 
@@ -124,9 +125,9 @@ async function createInitialCarts() {
   try {
     console.log("Starting to create carts...");
 
-    await createCart({ usersId: 1, itemsId: 1, quantity: 3 });
-    await createCart({ usersId: 1, itemsId: 2, quantity: 1 });
-    await createCart({ usersId: 2, itemsId: 3, quantity: 1 });
+    await createCart({ usersId: 1, itemsId: 1,quantity: 3 });
+    await createCart({ usersId: 1, itemsId: 2,  quantity: 1});
+    await createCart({ usersId: 2, itemsId: 3, quantity: 1});
 
 
 
@@ -138,7 +139,6 @@ async function createInitialCarts() {
 }
 
 
-
 async function rebuildDB() {
   try {
     client.connect();
@@ -148,6 +148,7 @@ async function rebuildDB() {
     await createInitialUsers();
     await createInitialItems();
     await createInitialCarts();
+    
   } catch (error) {
     throw error;
   }
@@ -165,8 +166,8 @@ async function testDB() {
 
     const carts = await getAllCarts();
     console.log("getAllCarts:", carts);
-
-
+    
+    
     console.log("Finished database tests!");
   } catch (error) {
     console.error("Error testing database!");
