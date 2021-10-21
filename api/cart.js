@@ -60,6 +60,27 @@ cartRouter.post('/', async (req, res, next) => {
     }
 });
 
+async function getCartAndItemsByUser(userId) {
+	try {
+		const {rows: [cart]} = await client.query(`
+			SELECT * 
+			FROM cart
+			WHERE "usersId"=${userId}
+			RETURNING *;
+		`);
+
+		const {rows:[items]} = await client.query(`
+			SELECT * FROM items
+			JOIN cart_items ON "itemsId"= items.id
+			WHERE "cartId" = ${cart.id};
+		`);
+		cart.items = items;
+		return cart;
+	} catch (error) {
+		throw error;
+	}
+}
+
 // cartRouter.delete('/removeItem', async (req, res, next) => {
     
 //     try {
