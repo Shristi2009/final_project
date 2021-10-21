@@ -3,7 +3,8 @@ const {
     createCart,
     removeItem,
     deleteCart,
-    getCartByUsersId
+    getCartByUsersId,
+    getCartAndItemsByUserId
 } = require("../db");
 
 const cartRouter = require('express').Router();
@@ -26,12 +27,12 @@ cartRouter.get('/', async (req, res, next) => {
     }
 });
 
-cartRouter.get('/ usersId', async (req, res, next) => {
+cartRouter.get('/:usersId', async (req, res, next) => {
     console.log(req.params.usersId)
     try {
         if(req.user){
-            const cart = await getCartByUsersId(req.user.id); 
-            console.log('GETTING CART BY ID:');
+            const cart = await getCartAndItemsByUsersId(req.params.usersId); 
+            console.log('GETTING CART ITEMS BY USERID:');
             res.send(cart);
         }else {
             res.status(401)

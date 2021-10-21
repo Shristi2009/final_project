@@ -14,15 +14,16 @@ async function createCart({
     usersId, 
     itemsId,
     processed,
-    inProcess
+    inProcess,
+    quantity
     
   }) {
     try {
       const { rows: [ cart ] } = await client.query(`
-        INSERT INTO cart("usersId", "itemsId") 
-        VALUES($1, $2)
+        INSERT INTO cart("usersId", "itemsId", quantity) 
+        VALUES($1, $2, $3)
         RETURNING *;
-      `, [usersId, itemsId]);
+      `, [usersId, itemsId, quantity]);
   
       return cart;
     } catch (error) {
@@ -60,8 +61,6 @@ async function createCart({
     }
   }
 
-
-
   
   
   async function deleteCart (id) {
@@ -95,12 +94,32 @@ async function createCart({
       throw error;
     }
   }
-
+  async function getCartAndItemsByUserId(userId) {
+    try {
+      const {rows: [cart]} = await client.query(`
+        SELECT * 
+        FROM cart
+        WHERE userId=${userId}
+        RETURNING *;
+      `);
+  
+      const {rows:[items]} = await client.query(`
+        SELECT * FROM items
+        JOIN cart_item ON "itemsId" = items.id
+        WHERE "cartId" = ${cart.id};
+      `);
+      cart.items = items;
+      return cart;
+    } catch (error) {
+      throw error;
+    }
+  }
   module.exports = {
     getCartById,
     createCart,
     removeItem,
     deleteCart,
     getCartByUsersId,
-    getAllCarts
+    getAllCarts,
+    getCartAndItemsByUserId
 }

@@ -42,4 +42,19 @@ usersRouter.post('/register', async (req, res, next) => {
     }
 });
 
+usersRouter.get('/:username', async (req, res, next) => {
+    try {
+        if (req.user.username == req.params.username){
+        const user = await getUserByUsername(req.params.username);
+        res.send (user);
+        }else{
+            res.status(401)
+            next({message:"no user"});    
+        }
+        
+        
+    } catch (error) {
+        next(error);
+    }
+});
 module.exports = usersRouter
