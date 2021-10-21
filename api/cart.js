@@ -27,11 +27,11 @@ cartRouter.get('/', async (req, res, next) => {
     }
 });
 
-cartRouter.get('/usersId', async (req, res, next) => {
+cartRouter.get('/:usersId', async (req, res, next) => {
     console.log(req.params.usersId)
     try {
         if(req.user){
-            const cart = await getCartAndItemsByUsersId(req.user.id); 
+            const cart = await getCartAndItemsByUsersId(req.params.usersId); 
             console.log('GETTING CART ITEMS BY USERID:');
             res.send(cart);
         }else {
