@@ -26,7 +26,7 @@ cartRouter.get('/', async (req, res, next) => {
     }
 });
 
-cartRouter.get('/usersId', async (req, res, next) => {
+cartRouter.get('/ usersId', async (req, res, next) => {
     console.log(req.params.usersId)
     try {
         if(req.user){
