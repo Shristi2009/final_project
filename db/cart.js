@@ -14,15 +14,16 @@ async function createCart({
     usersId, 
     itemsId,
     processed,
-    inProcess
+    inProcess,
+    quantity
     
   }) {
     try {
       const { rows: [ cart ] } = await client.query(`
-        INSERT INTO cart("usersId", "itemsId") 
-        VALUES($1, $2)
+        INSERT INTO cart("usersId", "itemsId", quantity) 
+        VALUES($1, $2, $3)
         RETURNING *;
-      `, [usersId, itemsId]);
+      `, [usersId, itemsId, quantity]);
   
       return cart;
     } catch (error) {
