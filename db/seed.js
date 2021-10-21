@@ -3,17 +3,20 @@ const {
   createUser,
   createItem,
   createCart,
-  getAllCarts
+  getAllCarts,
+  
 } = require('./index');
 
 const client = require('./client');
 const { getAllItems } = require('./items');
+const { addItemToCart, getCartItemById } = require('./cart_items');
 
 async function dropTables() {
   try {
     console.log("Starting to drop tables...");
 
     await client.query(`
+    DROP TABLE IF EXISTS cart_items;
       DROP TABLE IF EXISTS cart;
       DROP TABLE IF EXISTS items;
       DROP TABLE IF EXISTS users;
@@ -68,9 +71,15 @@ async function createTables() {
       "inProcess" BOOLEAN DEFAULT true 
     );
   `);
-
-
-
+  await client.query(`
+  CREATE TABLE cart_items (
+    id SERIAL PRIMARY KEY,
+    "cartId" INTEGER REFERENCES cart(id),
+    "itemsId" INTEGER REFERENCES items(id),
+    UNIQUE("cartId"),
+    quantity INTEGER
+  );
+  `);
  
 //ask shannon about image in database
 
@@ -91,7 +100,7 @@ async function createInitialUsers() {
     const albert = await createUser({ username: 'albert', password: 'bertie99', firstName: 'Albert', lastName: 'Johnson', location: 'St. Louis, MO' });
     const john = await createUser({ username: 'john', password: 'admintest', firstName: 'John', lastName: 'Doe', location: 'Oklahoma City, OK' });
     const skip = await createUser({ username: 'skip', password: 'skippassword', firstName: 'Skip', lastName: 'Allthetime', location: 'Norman, OK' });
-    const admin = await createUser({ username: 'admin', password: '123', firstName: 'The', lastName: 'Administrator', location: 'Kansas City, MO', admin: true });
+    const admin = await createUser({ username: 'admin', password: 'password123', firstName: 'The', lastName: 'Administrator', location: 'Kansas City, MO', admin: true });
 
 
 
@@ -136,6 +145,23 @@ async function createInitialCarts() {
   }
 }
 
+async function createInitialCartItems() {
+  try {
+    console.log("Starting to create cartItems...");
+
+    await addItemToCart({ cartId: 1, itemsId: 1 , quantity: 3});
+    await addItemToCart({ cartId: 2, itemsId: 2 , quantity: 12});
+    await addItemToCart({ cartId: 3, itemsId: 3 , quantity: 2});
+
+
+
+    console.log("Finished creating cartItems!");
+  } catch(error) {
+    console.error("Error creating cartItems!");
+    throw error;
+  }
+}
+
 async function rebuildDB() {
   try {
     client.connect();
@@ -145,6 +171,7 @@ async function rebuildDB() {
     await createInitialUsers();
     await createInitialItems();
     await createInitialCarts();
+    await createInitialCartItems();
   } catch (error) {
     throw error;
   }
@@ -162,6 +189,9 @@ async function testDB() {
 
     const carts = await getAllCarts();
     console.log("getAllCarts:", carts);
+    
+    const cartItem = await getCartItemById(2);
+    console.log("getCartItemById:", cartItem);
 
     console.log("Finished database tests!");
   } catch (error) {
