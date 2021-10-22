@@ -4,7 +4,9 @@ const {
     removeItem,
     deleteCart,
     getCartByUsersId,
-    getCartAndItemsByUserId
+    getCartAndItemsByUserId,
+    editCart,
+    cartcheckout
 } = require("../db");
 
 const cartRouter = require('express').Router();
@@ -30,8 +32,8 @@ cartRouter.get('/', async (req, res, next) => {
 cartRouter.get('/:usersId', async (req, res, next) => {
     console.log(req.params.usersId)
     try {
-        if(req.user){
-            const cart = await getCartAndItemsByUsersId(req.params.usersId); 
+        if(req.user.id == req.params.usersId){
+            const cart = await getCartAndItemsByUserId(req.params.usersId); 
             console.log('GETTING CART ITEMS BY USERID:');
             res.send(cart);
         }else {
@@ -60,27 +62,35 @@ cartRouter.post('/', async (req, res, next) => {
         next(error);
     }
 });
+cartRouter.patch('/editCart/:username', async (req, res, next) => {
+    try {
+        if(req.user.username== req.params.username){
+            const editedCart = await editCart(req.body); 
+            res.send(editedCart);
+        } else {
+            res.status(401)
+            next({message:"no user match"});
+        }
+    } catch (error) {
+        console.log('THERE WAS AN ERROR CREATING CART');
+        next(error);
+    }
+});
 
-async function getCartAndItemsByUser(userId) {
-	try {
-		const {rows: [cart]} = await client.query(`
-			SELECT * 
-			FROM cart
-			WHERE "usersId"=${userId}
-			RETURNING *;
-		`);
-
-		const {rows:[items]} = await client.query(`
-			SELECT * FROM items
-			JOIN cart_items ON "itemsId"= items.id
-			WHERE "cartId" = ${cart.id};
-		`);
-		cart.items = items;
-		return cart;
-	} catch (error) {
-		throw error;
-	}
-}
+cartRouter.patch('/cartCheckout/:username', async (req, res, next) => {
+    try {
+        if(req.user.username==req.params.username){
+            const checkedoutCart = await cartcheckout(req.body); 
+            res.send(checkedoutCart);
+        } else {
+            res.status(401)
+            next({message:"no user"});
+        }
+    } catch (error) {
+        console.log('THERE WAS AN ERROR CREATING CART');
+        next(error);
+    }
+});
 
 // cartRouter.delete('/removeItem', async (req, res, next) => {
     
