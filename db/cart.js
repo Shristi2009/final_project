@@ -94,22 +94,74 @@ async function createCart({
       throw error;
     }
   }
-  async function getCartAndItemsByUserId(userId) {
+  async function getCartAndItemsByUserId(usersId) {
     try {
-      const {rows: [cart]} = await client.query(`
-        SELECT * 
-        FROM cart
-        WHERE userId=${userId}
-        RETURNING *;
-      `);
+      
   
       const {rows:[items]} = await client.query(`
         SELECT * FROM items
-        JOIN cart_item ON "itemsId" = items.id
-        WHERE "cartId" = ${cart.id};
+        JOIN cart ON "itemsId" = items.id
+        WHERE "usersId" = ${usersId};
       `);
-      cart.items = items;
-      return cart;
+      
+      return items;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async function cartcheckout({ 
+    id,
+    processed, 
+    inProcess,
+    
+    
+  }) {
+    try {
+if(processed) {
+    const {rows: [cartProcessed]} = await client.query(`
+    UPDATE cart
+    SET "inProcess"=$1, processed=$2 
+    WHERE id=${id}
+    RETURNING *;
+`, [inProcess, processed]);
+return cartProcessed;
+} 
+  
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async function editCart({ 
+    id,
+    quantity,
+    itemsId
+    
+  }) {
+    try {
+    
+//     const {rows: [updatedRoutine]} = await client.query(`
+//     UPDATE cart SET
+//   quantity = COALESCE(NULLIF('${quantity}', ''), quantity),
+  
+//   WHERE id = ${id}
+//     RETURNING *;
+// `);
+// return updatedRoutine;
+if (quantity>0){
+const {rows: [updatedQuantity]} = await client.query(`
+UPDATE cart
+SET quantity=$1, 
+WHERE id=${id}
+RETURNING *;
+`, [quantity]);
+return updatedQuantity;
+}else{
+  await removeItem(itemsId);
+}
+
+    
     } catch (error) {
       throw error;
     }
@@ -121,5 +173,7 @@ async function createCart({
     deleteCart,
     getCartByUsersId,
     getAllCarts,
-    getCartAndItemsByUserId
+    getCartAndItemsByUserId,
+    editCart,
+    cartcheckout
 }
