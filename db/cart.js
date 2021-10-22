@@ -98,13 +98,14 @@ async function createCart({
     try {
       
   
-      const {rows:[items]} = await client.query(`
+      const {rows} = await client.query(`
         SELECT * FROM items
         JOIN cart ON "itemsId" = items.id
         WHERE "usersId" = ${usersId};
+        
       `);
-      
-      return items;
+      console.log("ITEMS", rows)
+      return rows;
     } catch (error) {
       throw error;
     }
