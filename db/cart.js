@@ -104,7 +104,7 @@ async function createCart({
         WHERE "usersId" = ${usersId};
         
       `);
-      console.log("ITEMS", rows)
+      console.log("ITEMS", rows);
       return rows;
     } catch (error) {
       throw error;
