@@ -11,25 +11,25 @@ async function getAllItems() {
 
   async function getItemById(id) {
     try {
-      const { rows: [ items ] } = await client.query(`
+      const { rows } = await client.query(`
         SELECT *
         FROM items
-        WHERE id='${ id }';
+        WHERE id= ${ id };
       `);
   
-      return items;
+      return rows;
     } catch (error) {
       throw error;
     }
   }
 
-  async function createItem({ name, price, description }) {
+  async function createItem({ name, price, description, picture }) {
     try {
       const { rows } = await client.query(`
-      INSERT INTO items(name, price, description) 
-      VALUES($1, $2, $3)  
+      INSERT INTO items(name, price, description, picture) 
+      VALUES($1, $2, $3, $4)  
       RETURNING *;
-    `, [name, price, description]);
+    `, [name, price, description, picture]);
   
       return rows;
     } catch (error) {

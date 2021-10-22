@@ -2,7 +2,8 @@ const {
   getAllUsers,
       createUser, 
       getUserById, 
-      getUserByUsername
+      getUserByUsername,
+      getUser
 } = require('./users')
 
 const {
@@ -19,9 +20,11 @@ const {getCartById,
   removeItem,
   deleteCart,
   getCartByUsersId,
-  getAllCarts
- 
+  getAllCarts,
+  getCartAndItemsByUserId
 } = require('./cart')
+
+
 
 // and export them
 module.exports = {
@@ -39,5 +42,9 @@ module.exports = {
   removeItem,
   deleteCart,
   getCartByUsersId,
-  getAllCarts
+  getAllCarts,
+  getCartAndItemsByUserId
+
+  
 }
+

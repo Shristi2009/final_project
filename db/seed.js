@@ -3,20 +3,23 @@ const {
   createUser,
   createItem,
   createCart,
-  getAllCarts
+  getAllCarts,
+  
 } = require('./index');
 
 const client = require('./client');
 const { getAllItems } = require('./items');
+
 
 async function dropTables() {
   try {
     console.log("Starting to drop tables...");
 
     await client.query(`
-      DROP TABLE IF EXISTS cart;
-      DROP TABLE IF EXISTS items;
-      DROP TABLE IF EXISTS users;
+    
+      DROP TABLE IF EXISTS cart cascade;
+      DROP TABLE IF EXISTS items cascade;
+      DROP TABLE IF EXISTS users cascade;
 
     `);
 
@@ -53,7 +56,8 @@ async function createTables() {
     id SERIAL PRIMARY KEY,
     name varchar(255) UNIQUE NOT NULL,
     price DECIMAL(3,2), 
-    description varchar(255) NOT NULL
+    description varchar(255) NOT NULL,
+    picture varchar(255)
   );
 `);
 // items table needs usersid and cartid
@@ -64,12 +68,11 @@ async function createTables() {
       "usersId" INTEGER REFERENCES users(id),
       "itemsId" INTEGER REFERENCES items(id),
       processed BOOLEAN DEFAULT false, 
-      "inProcess" BOOLEAN DEFAULT true 
+      "inProcess" BOOLEAN DEFAULT true,
+      quantity INTEGER
     );
   `);
-
-
-
+  
  
 //ask shannon about image in database
 
@@ -90,6 +93,7 @@ async function createInitialUsers() {
     const albert = await createUser({ username: 'albert', password: 'bertie99', firstName: 'Albert', lastName: 'Johnson', location: 'St. Louis, MO' });
     const john = await createUser({ username: 'john', password: 'admintest', firstName: 'John', lastName: 'Doe', location: 'Oklahoma City, OK' });
     const skip = await createUser({ username: 'skip', password: 'skippassword', firstName: 'Skip', lastName: 'Allthetime', location: 'Norman, OK' });
+    const admin = await createUser({ username: 'admin', password: 'password123', firstName: 'The', lastName: 'Administrator', location: 'Kansas City, MO', admin: true });
 
 
 
@@ -104,9 +108,9 @@ async function createInitialItems() {
   try {
     console.log("Starting to create items...");
 
-    const captainCrunch = await createItem({ name: 'Captian Crunch', price: 3, description: "Sweet and golden, with a crunch you’ll love, nothing competes with the original Cap’n Crunch." });
-    const cheerios = await createItem({ name: 'Cheerios', price: 3, description: "Our delicious O’s are made from whole grain oats which contain beta-glucan, a soluble fiber that can help lower cholesterol as part of a heart-healthy diet.* Pick up a Cheerios cereal box today and begin your happy heart journey." });
-    const frostedFlakes = await createItem({ name: 'Frosted Flakes', price: 3, description: "Kellogg's Frosted Flakes consist of crunchy flakes perfectly coated with sweetened frosting gives every morning a great start." });
+    const captainCrunch = await createItem({ name: 'Captian Crunch', price: 3, description: "Sweet and golden, with a crunch you’ll love, nothing competes with the original Cap’n Crunch.", picture: "captian_crunch.jpg" });
+    const cheerios = await createItem({ name: 'Cheerios', price: 3, description: "Our delicious O’s are made from whole grain oats which contain beta-glucan, a soluble fiber that can help lower cholesterol as part of a heart-healthy diet.* Pick up a Cheerios cereal box today and begin your happy heart journey.", picture: "cheerios.jpg" });
+    const frostedFlakes = await createItem({ name: 'Frosted Flakes', price: 3, description: "Kellogg's Frosted Flakes consist of crunchy flakes perfectly coated with sweetened frosting gives every morning a great start.", picture: "frosted_flakes.jpg"  });
 
 
 
@@ -121,9 +125,9 @@ async function createInitialCarts() {
   try {
     console.log("Starting to create carts...");
 
-    await createCart({ usersId: 1, itemsId: 1 });
-    await createCart({ usersId: 1, itemsId: 2 });
-    await createCart({ usersId: 2, itemsId: 3 });
+    await createCart({ usersId: 1, itemsId: 1,quantity: 3 });
+    await createCart({ usersId: 1, itemsId: 2,  quantity: 1});
+    await createCart({ usersId: 2, itemsId: 3, quantity: 1});
 
 
 
@@ -134,6 +138,7 @@ async function createInitialCarts() {
   }
 }
 
+
 async function rebuildDB() {
   try {
     client.connect();
@@ -143,6 +148,7 @@ async function rebuildDB() {
     await createInitialUsers();
     await createInitialItems();
     await createInitialCarts();
+    
   } catch (error) {
     throw error;
   }
@@ -160,7 +166,8 @@ async function testDB() {
 
     const carts = await getAllCarts();
     console.log("getAllCarts:", carts);
-
+    
+    
     console.log("Finished database tests!");
   } catch (error) {
     console.error("Error testing database!");

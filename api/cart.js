@@ -3,7 +3,8 @@ const {
     createCart,
     removeItem,
     deleteCart,
-    getCartByUsersId
+    getCartByUsersId,
+    getCartAndItemsByUserId
 } = require("../db");
 
 const cartRouter = require('express').Router();
@@ -13,9 +14,9 @@ cartRouter.get('/', async (req, res, next) => {
     try {
         if(req.user){
             const cartByUsersId = await getCartByUsersId(req.user.id)
-            const cart = await getCartById(cartByUsersId.usersId); 
+            //const cart = await getCartById(cartByUsersId.usersId); 
             console.log('GETTING CART BY ID:');
-            res.send(cart);
+            res.send(cartByUsersId);
         }else{
             res.status(401)
             next({message:"no user"});    
@@ -26,12 +27,12 @@ cartRouter.get('/', async (req, res, next) => {
     }
 });
 
-cartRouter.get('/usersId', async (req, res, next) => {
-    
+cartRouter.get('/:usersId', async (req, res, next) => {
+    console.log(req.params.usersId)
     try {
         if(req.user){
-            const cart = await getCartByUsersId(req.user.id); 
-            console.log('GETTING CART BY ID:');
+            const cart = await getCartAndItemsByUsersId(req.params.usersId); 
+            console.log('GETTING CART ITEMS BY USERID:');
             res.send(cart);
         }else {
             res.status(401)
@@ -60,39 +61,60 @@ cartRouter.post('/', async (req, res, next) => {
     }
 });
 
-cartRouter.delete('/removeItem', async (req, res, next) => {
+async function getCartAndItemsByUser(userId) {
+	try {
+		const {rows: [cart]} = await client.query(`
+			SELECT * 
+			FROM cart
+			WHERE "usersId"=${userId}
+			RETURNING *;
+		`);
+
+		const {rows:[items]} = await client.query(`
+			SELECT * FROM items
+			JOIN cart_items ON "itemsId"= items.id
+			WHERE "cartId" = ${cart.id};
+		`);
+		cart.items = items;
+		return cart;
+	} catch (error) {
+		throw error;
+	}
+}
+
+// cartRouter.delete('/removeItem', async (req, res, next) => {
     
-    try {
-        if(req.user){
-            const {id} =req.user;
-            const getCart =getCartByUsersId(id)
-            const removeItemFromCart = await removeItem(getCart.itemsid); 
-            res.send(removeItemFromCart);
-        } else {
-            res.status(401)
-            next({message:"no user"});
-        }
-    } catch (error) {
-        console.log('THERE WAS AN ERROR removing item cart');
-        next(error);
-    }
-});
+//     try {
+//         if(req.user){
+//             const {id} =req.user;
+//             const getCart =getCartByUsersId(id)
+//             const removeItemFromCart = await removeItem(getCart.itemsid); 
+//             res.send(removeItemFromCart);
+//         } else {
+//             res.status(401)
+//             next({message:"no user"});
+//         }
+//     } catch (error) {
+//         console.log('THERE WAS AN ERROR removing item cart');
+//         next(error);
+//     }
+// });
    
-cartRouter.delete('/', async (req, res, next) => {
+// cartRouter.delete('/', async (req, res, next) => {
     
-    try {
-        if(req.user){
-            const {id} =req.user;
-            const getCart =getCartByUsersId(id)
-            const deletedCart = await deleteCart(getCart.id); 
-            res.send(deletedCart);
-        } else {
-            res.status(401)
-            next({message:"no user"});
-        }
-    } catch (error) {
-        console.log('THERE WAS AN ERROR deleting cart');
-        next(error);
-    }
-});
+//     try {
+//         if(req.user){
+//             const {id} =req.user;
+//             const getCart =getCartByUsersId(id)
+//             const deletedCart = await deleteCart(getCart.id); 
+//             res.send(deletedCart);
+//         } else {
+//             res.status(401)
+//             next({message:"no user"});
+//         }
+//     } catch (error) {
+//         console.log('THERE WAS AN ERROR deleting cart');
+//         next(error);
+//     }
+// });
     module.exports = cartRouter ;
