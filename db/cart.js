@@ -111,7 +111,7 @@ async function createCart({
   }
 
   async function cartcheckout({ 
-    id,
+    usersId,
     processed, 
     inProcess,
     
@@ -122,7 +122,7 @@ if(processed) {
     const {rows: [cartProcessed]} = await client.query(`
     UPDATE cart
     SET "inProcess"=$1, processed=$2 
-    WHERE id=${id}
+    WHERE "usersId"=${usersId}
     RETURNING *;
 `, [inProcess, processed]);
 return cartProcessed;
