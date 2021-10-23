@@ -102,6 +102,7 @@ async function createCart({
         SELECT * FROM items
         JOIN cart ON "itemsId" = items.id
         WHERE "usersId" = ${usersId};
+        
       `);
       console.log("ITEMS", rows);
       return rows;
