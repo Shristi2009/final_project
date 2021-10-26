@@ -134,32 +134,22 @@ return cartProcessed;
   }
 
   async function editCart({ 
-    id,
     quantity,
     itemsId
     
   }) {
     try {
     
-//     const {rows: [updatedRoutine]} = await client.query(`
-//     UPDATE cart SET
-//   quantity = COALESCE(NULLIF('${quantity}', ''), quantity),
-  
-//   WHERE id = ${id}
-//     RETURNING *;
-// `);
-// return updatedRoutine;
-if (quantity>0){
+
+
 const {rows: [updatedQuantity]} = await client.query(`
 UPDATE cart
 SET quantity=$1, 
-WHERE id=${id}
+WHERE "itemsId"=${itemsId}
 RETURNING *;
 `, [quantity]);
 return updatedQuantity;
-}else{
-  await removeItem(itemsId);
-}
+
 
     
     } catch (error) {
