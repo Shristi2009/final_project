@@ -64,7 +64,7 @@ cartRouter.post('/', async (req, res, next) => {
 });
 cartRouter.patch('/editCart/:username', async (req, res, next) => {
     try {
-        if(req.user.username== req.params.username){
+        if(req.user.username == req.params.username){
             const editedCart = await editCart(req.body); 
             res.send(editedCart);
         } else {
