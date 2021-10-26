@@ -144,7 +144,7 @@ return cartProcessed;
 
 const {rows: [updatedQuantity]} = await client.query(`
 UPDATE cart
-SET quantity=$1, 
+SET quantity=$1
 WHERE "itemsId"=${itemsId}
 RETURNING *;
 `, [quantity]);
