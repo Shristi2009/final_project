@@ -22,6 +22,7 @@ const {getCartById,
   getCartByUsersId,
   getAllCarts,
   getCartAndItemsByUserId,
+  getCartAndItemsInPrcoessByUserId,
   editCart,
   cartcheckout
 } = require('./cart')
@@ -46,6 +47,7 @@ module.exports = {
   getCartByUsersId,
   getAllCarts,
   getCartAndItemsByUserId,
+  getCartAndItemsInPrcoessByUserId,
   editCart,
   cartcheckout
 

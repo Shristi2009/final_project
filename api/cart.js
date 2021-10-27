@@ -5,6 +5,7 @@ const {
     deleteCart,
     getCartByUsersId,
     getCartAndItemsByUserId,
+    getCartAndItemsInPrcoessByUserId,
     editCart,
     cartcheckout
 } = require("../db");
@@ -46,7 +47,22 @@ cartRouter.get('/:usersId', async (req, res, next) => {
     }
 });
 
-
+cartRouter.get('/inProcess/:usersId', async (req, res, next) => {
+    console.log(req.params.usersId)
+    try {
+        if(req.user.id == req.params.usersId){
+            const cart = await getCartAndItemsInPrcoessByUserId(req.params.usersId); 
+            console.log('GETTING CART ITEMS BY USERID:');
+            res.send(cart);
+        }else {
+            res.status(401)
+            next({message:"no user"});
+        }
+    } catch (error) {
+        console.log('THERE WAS AN ERROR GETTING CART By USERSID');
+        next(error);
+    }
+});
 
 cartRouter.post('/', async (req, res, next) => {
     try {

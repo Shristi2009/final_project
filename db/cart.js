@@ -109,7 +109,21 @@ async function createCart({
       throw error;
     }
   }
-
+  async function getCartAndItemsInPrcoessByUserId(usersId) {
+    try {
+      
+  
+      const {rows} = await client.query(`
+        SELECT * FROM items
+        JOIN cart ON "itemsId" = items.id
+        WHERE "usersId" = ${usersId} AND "inProcess" = true;
+      `);
+      console.log("ITEMS", rows);
+      return rows;
+    } catch (error) {
+      throw error;
+    }
+  }
   async function cartcheckout({ 
     usersId,
     processed, 
@@ -118,7 +132,7 @@ async function createCart({
     
   }) {
     try {
-if(processed) {
+if(!processed) {
     const {rows: [cartProcessed]} = await client.query(`
     UPDATE cart
     SET "inProcess"=$1, processed=$2 
@@ -164,6 +178,7 @@ return updatedQuantity;
     getCartByUsersId,
     getAllCarts,
     getCartAndItemsByUserId,
+    getCartAndItemsInPrcoessByUserId,
     editCart,
     cartcheckout
 }
