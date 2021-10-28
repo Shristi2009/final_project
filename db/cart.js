@@ -133,13 +133,13 @@ async function createCart({
   }) {
     try {
 
-    const {rows: [cartProcessed]} = await client.query(`
+    const {rows} = await client.query(`
     UPDATE cart
     SET "inProcess"=$1, processed=$2 
     WHERE "usersId"=${usersId}
     RETURNING *;
 `, [inProcess, processed]);
-return cartProcessed;
+return rows;
 
   
     } catch (error) {
