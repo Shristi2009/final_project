@@ -132,7 +132,7 @@ async function createCart({
     
   }) {
     try {
-if(!processed) {
+
     const {rows: [cartProcessed]} = await client.query(`
     UPDATE cart
     SET "inProcess"=$1, processed=$2 
@@ -140,7 +140,7 @@ if(!processed) {
     RETURNING *;
 `, [inProcess, processed]);
 return cartProcessed;
-} 
+
   
     } catch (error) {
       throw error;
