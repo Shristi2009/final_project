@@ -3,7 +3,8 @@ const {
       createUser, 
       getUserById, 
       getUserByUsername,
-      getUser
+      getUser,
+      editUser
 } = require('./users')
 
 const {
@@ -49,7 +50,8 @@ module.exports = {
   getCartAndItemsByUserId,
   getCartAndItemsInPrcoessByUserId,
   editCart,
-  cartcheckout
+  cartcheckout,
+  editUser
 
 
   

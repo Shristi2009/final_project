@@ -4,11 +4,13 @@ const {
   createItem,
   createCart,
   getAllCarts,
+  editUser
   
 } = require('./index');
 
 const client = require('./client');
 const { getAllItems } = require('./items');
+
 
 
 async function dropTables() {
@@ -93,7 +95,7 @@ async function createInitialUsers() {
     const albert = await createUser({ username: 'albert', password: 'bertie99', firstName: 'Albert', lastName: 'Johnson', location: 'St. Louis, MO' });
     const john = await createUser({ username: 'john', password: 'admintest', firstName: 'John', lastName: 'Doe', location: 'Oklahoma City, OK' });
     const skip = await createUser({ username: 'skip', password: 'skippassword', firstName: 'Skip', lastName: 'Allthetime', location: 'Norman, OK' });
-    const admin = await createUser({ username: 'admin', password: 'password123', firstName: 'The', lastName: 'Administrator', location: 'Kansas City, MO', admin: true });
+    const admin = await createUser({ username: 'admin', password: 'password123', firstName: 'The', lastName: 'Administrator', location: 'Kansas City, MO' });
 
 
 
@@ -148,6 +150,7 @@ async function rebuildDB() {
     await createInitialUsers();
     await createInitialItems();
     await createInitialCarts();
+    await editUser();
     
   } catch (error) {
     throw error;
