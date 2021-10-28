@@ -25,6 +25,8 @@ async function getAllUsers() {
     }
   }
 
+
+
   async function getUserById(id) {
     try {
       const { rows: [ user ] } = await client.query(`
@@ -56,10 +58,30 @@ async function getAllUsers() {
   }
 // testing 123
 
+async function editUser(){ 
+  try {
+  
+const { rows } = await client.query(`
+UPDATE users
+SET admin= true
+WHERE id= 4
+RETURNING *;
+`, []);
+return rows;
+
+
+  
+  } catch (error) {
+    throw error;
+  
+  }
+}
+
   module.exports = {
       getAllUsers,
       createUser, 
       getUserById, 
       getUserByUsername,
+      editUser
       
   }
