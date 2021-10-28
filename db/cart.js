@@ -47,15 +47,15 @@ async function createCart({
 
   async function getCartByUsersId(usersId) {
     try {
-      const { rows: [ cart] } = await client.query(`
+      const {rows} = await client.query(`
         SELECT *
         FROM cart
-        WHERE id=${ usersId }
+        WHERE "usersId"=${ usersId }
       `);
     
   
       
-      return cart;
+      return rows;
     } catch (error) {
       throw error;
     }
@@ -66,13 +66,13 @@ async function createCart({
   async function deleteCart (id) {
     try {
         
-       await client.query(`
+      await client.query(`
         DELETE 
         FROM cart
         WHERE id=${id}
       `);
     
-    
+  
      
     } catch (error) {
       throw error;
@@ -148,14 +148,12 @@ return rows;
   }
 
   async function editCart({ 
-    quantity,
-    itemsId
+    itemsId,
+    quantity
     
   }) {
     try {
-    
-
-
+    // added this just so i know this is updated in git 
 const {rows: [updatedQuantity]} = await client.query(`
 UPDATE cart
 SET quantity=$1
@@ -163,8 +161,6 @@ WHERE "itemsId"=${itemsId}
 RETURNING *;
 `, [quantity]);
 return updatedQuantity;
-
-
     
     } catch (error) {
       throw error;
