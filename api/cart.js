@@ -126,21 +126,21 @@ cartRouter.patch('/cartCheckout/:username', async (req, res, next) => {
 //     }
 // });
    
-// cartRouter.delete('/', async (req, res, next) => {
+cartRouter.delete('/:CartId', async (req, res, next) => {
     
-//     try {
-//         if(req.user){
-//             const {id} =req.user;
-//             const getCart =getCartByUsersId(id)
-//             const deletedCart = await deleteCart(getCart.id); 
-//             res.send(deletedCart);
-//         } else {
-//             res.status(401)
-//             next({message:"no user"});
-//         }
-//     } catch (error) {
-//         console.log('THERE WAS AN ERROR deleting cart');
-//         next(error);
-//     }
-// });
+    try {
+        if(req.user){
+        
+           // const getCart =getCartByUsersId(req.user.id)
+            const deletedCart = await deleteCart(req.params.CartId); 
+            res.send(deletedCart);
+        } else {
+            res.status(401)
+            next({message:"no user"});
+        }
+    } catch (error) {
+        console.log('THERE WAS AN ERROR deleting cart');
+        next(error);
+    }
+});
     module.exports = cartRouter ;
