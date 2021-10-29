@@ -1,7 +1,7 @@
 const usersRouter = require('express').Router();
 const jwt = require('jsonwebtoken')
 
-const {createUser, getUserByUsername} = require ('../db')
+const {createUser, getUserByUsername, getAllUsers} = require ('../db')
 
 const  {SECRET} = process.env;
 
@@ -58,4 +58,19 @@ usersRouter.get('/:username', async (req, res, next) => {
         next(error);
     }
 });
+
+usersRouter.get('/', async (req, res, next) => {
+    try {
+        
+        const users = await getAllUsers(); 
+        
+        res.send(users);
+        next();
+    } catch (error) {
+        console.log('THERE WAS AN ERROR GETTING ALL USERS');
+        next(error);
+    }
+});
+
+
 module.exports = usersRouter
