@@ -43,17 +43,12 @@ itemsRouter.get('/:id', async (req, res, next) => {//Colons meen a variable, use
 itemsRouter.post('/', async (req, res, next) => {
     console.log(req.user)
     try {
-        if(req.user){
-            
+           
         // this should eventually check if they are admin for this.
         const createdItem = await createItem(req.body); 
          console.log(createdItem)
         res.send(createdItem);
-        } else {
-            res.status(401)
-            next({message:"no user"});
-            console.log("error")
-        }
+        
     } catch (error) {
         console.log('THERE WAS AN ERROR CREATING ITEM');
         next(error);
