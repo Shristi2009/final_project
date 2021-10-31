@@ -70,6 +70,7 @@ async function createCart({
         DELETE 
         FROM cart
         WHERE id=${id}
+        RETURNING *;
       `);
     
   

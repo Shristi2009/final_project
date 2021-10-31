@@ -132,8 +132,11 @@ cartRouter.delete('/:CartId', async (req, res, next) => {
         if(req.user){
         
            // const getCart =getCartByUsersId(req.user.id)
-            const deletedCart = await deleteCart(req.params.CartId); 
-            res.send()
+            await deleteCart(req.params.CartId); 
+
+
+            //console.log("deletedcArt",deletedCart);
+            res.send({message: "Item removed"});
         } else {
             res.status(401)
             next({message:"no user"});
